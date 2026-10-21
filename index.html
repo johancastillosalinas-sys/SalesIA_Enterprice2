@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SalesIA Enterprise — Gestión de Ventas & Analítica en Tiempo Real</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+              950: '#0f172a'
+            },
+            accent: {
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js para visualizaciones estadísticas -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Google Fonts & Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="h-full flex overflow-hidden text-slate-800 antialiased selection:bg-cyan-500 selection:text-white">
+
+  <!-- =========================================================================
+       SIDEBAR DE NAVEGACIÓN CORPORATIVO
+       ========================================================================= -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-slate-950 text-white flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 -translate-x-full border-r border-slate-800 shadow-xl">
+    <!-- Logotipo y Marca -->
+    <div class="h-16 flex items-center px-6 border-b border-slate-800 bg-slate-950/80">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/20">
+          <span class="text-white font-extrabold text-lg tracking-wider">S</span>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-base tracking-tight text-white leading-none">Sales<span class="text-cyan-400">IA</span></h1>
+          <span class="text-[10px] text-slate-400 font-medium uppercase tracking-widest">Enterprise v1.0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menú de Módulos Funcionales -->
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <div class="px-3 pb-2 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Operaciones</div>
+      
+      <button data-nav-target="dashboard" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all bg-blue-800 text-white font-semibold">
+        <!--<span class="text-base">📊</span>-->
+        <span>Dashboard & Monitor</span>
+      </button>
+
+      <button data-nav-target="pos" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-900 transition-all">
+        <!--<span class="text-base">💳</span>-->
+        <span>Terminal Transaccional</span>
+      </button>
+
+      <button data-nav-target="quotes" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-900 transition-all">
+        <!--<span class="text-base">📑</span> -->
+        <span>Cotizador Independiente</span>
+      </button>
+
+      <button data-nav-target="customers" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-900 transition-all">
+        <!--<span class="text-base">👥</span> -->
+        <span>Clientes</span>
+      </button>
+
+      <button data-nav-target="products" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-900 transition-all">
+        <!--<span class="text-base">🏷️</span> -->
+        <span>Catálogo Productos</span>
+      </button>
+
+      <div class="pt-4 px-3 pb-2 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Control</div>
+
+      <button data-nav-target="analytics" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-900 transition-all">
+        <!--<span class="text-base">📈</span> -->
+        <span>Analytics & Bayes</span>
+      </button>
+
+      <button data-nav-target="inventory" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-900 transition-all">
+        <!--<span class="text-base">📦</span> -->
+        <span>Almacén & Inventario</span>
+      </button>
+
+      <button data-nav-target="reports" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-900 transition-all">
+         <!--<span class="text-base">📑</span> -->
+        <span>Reportes Comerciales</span>
+      </button>
+
+      <button data-nav-target="audit" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-900 transition-all">
+         <!--<span class="text-base">🛡️</span>-->
+        <span>Auditoría (RF-22)</span>
+      </button>
+
+      <button data-nav-target="history" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-900 transition-all">
+        <!-- <span><span class="text-base">📜</span> -->
+        <span>Historial Consecutivo</span>
+      </button>
+    </nav>
+
+    <!-- Tarjeta de Salud y Regla 1 vs 100 -->
+    <div class="p-4 border-t border-slate-800/80 bg-slate-900/50">
+      <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/60 text-xs">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-slate-400 font-medium">Arquitectura:</span>
+          <span class="text-emerald-400 font-bold flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 realtime-indicator"></span>
+            Tiempo Real
+          </span>
+        </div>
+        <div class="flex items-center justify-between text-slate-300 mb-1">
+          <span>Regla de Oro:</span>
+          <span class="text-cyan-400 font-mono font-semibold">1 vs 100 OK</span>
+        </div>
+        <div class="flex items-center justify-between text-slate-400 text-[11px]">
+          <span>Persistencia:</span>
+          <span id="localStorageUsageBadge" class="font-mono text-slate-300">0 KB (0%)</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
+       ÁREA PRINCIPAL DE CONTENIDO
+       ========================================================================= -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+    <!-- Topbar Corporativo -->
+    <header class="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between shrink-0 z-30 shadow-xs">
+      <div class="flex items-center gap-3">
+        <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+        <div>
+          <h2 class="text-sm font-bold text-slate-800 tracking-tight flex items-center gap-2">
+            <span>Sistema Consecutivo en Tiempo Real</span>
+            <span class="hidden md:inline-flex px-2 py-0.5 rounded text-[11px] font-semibold bg-cyan-50 text-cyan-700 border border-cyan-200">
+              LocalStorage
+            </span>
+          </h2>
+          <p class="text-xs text-slate-400 hidden sm:block">Motor Estadístico</p>
+        </div>
+      </div>
+
+      <!-- Métricas en vivo del Topbar -->
+      <div class="flex items-center gap-3">
+        <!-- Selector de Rol Activo (RF-01 / FASE 13) -->
+        <div class="flex items-center gap-2 bg-slate-100 px-2.5 py-1 rounded-lg text-xs border border-slate-200">
+          <span class="text-slate-500 font-medium">Rol Activo:</span>
+          <select id="topbarUserRoleSelect" class="bg-white text-slate-800 font-semibold rounded px-2 py-0.5 border border-slate-300 text-xs focus:outline-none">
+            <option value="ADMINISTRADOR">Administrador (Total)</option>
+            <option value="GERENTE">Gerente (Reportes/Analytics)</option>
+            <option value="VENDEDOR">Vendedor (TPV/Cotizaciones)</option>
+            <option value="ANALISTA">Analista (Estadística/Bayes)</option>
+            <option value="ALMACEN">Almacén (Stock/Movimientos)</option>
+          </select>
+        </div>
+
+    <!--<div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+          <span class="text-slate-500">Cola FIFO:</span>
+          <span id="queueLengthBadge" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-800">0</span>
+          <span id="queueStatusText" class="text-[11px] text-slate-400 uppercase font-mono">OCIOSO</span>
+        </div>   -->
+
+        <button id="btnSystemReset" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors flex items-center gap-1.5" title="Reiniciar datos simulados">
+         <!-- <span>🗑️</span>-->
+          <span class="hidden sm:inline">Reiniciar Datos</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Contenedor Principal Scrolleable -->
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50/60">
+
+      <!-- =====================================================================
+           VISTA 1: DASHBOARD EJECUTIVO & MONITOR 
+           ===================================================================== -->
+      <section id="view-dashboard" class="view-section space-y-6">
+        
+        <!-- Tarjetas KPIs Principales -->
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+            <span class="text-xs font-medium text-slate-400 block mb-1">Transacciones</span>
+            <div id="kpiTotalSales" class="text-2xl font-extrabold text-slate-900 font-mono">0</div>
+            <span class="text-[11px] text-emerald-600 font-medium">Secuencia Consecutiva</span>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+            <span class="text-xs font-medium text-slate-400 block mb-1">Ingresos Consolidados</span>
+            <div id="kpiTotalRevenue" class="text-2xl font-extrabold text-blue-600 font-mono">S/ 0.00</div>
+            <span class="text-[11px] text-slate-400">Total acumulado</span>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+            <span class="text-xs font-medium text-slate-400 block mb-1">Ticket Promedio (μ)</span>
+            <div id="kpiMean" class="text-2xl font-extrabold text-slate-900 font-mono">S/ 0.00</div>
+            <span class="text-[11px] text-cyan-600 font-medium">Media Aritmética</span>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+            <span class="text-xs font-medium text-slate-400 block mb-1">Mediana de Venta (M)</span>
+            <div id="kpiMedian" class="text-2xl font-extrabold text-slate-900 font-mono">S/ 0.00</div>
+            <span class="text-[11px] text-cyan-600 font-medium">Punto central exacto</span>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs col-span-2 lg:col-span-1">
+            <span class="text-xs font-medium text-slate-400 block mb-1">Stock Global</span>
+            <div id="kpiTotalStock" class="text-2xl font-extrabold text-slate-900 font-mono">0 uds.</div>
+            <span class="text-[11px] text-slate-400">En 8 productos activos</span>
+          </div>
+        </div>
+
+        <!-- BANCO DE PRUEBAS INTERACTIVO: REGLA 1 VS 100 -->
+        <div class="bg-gradient-to-r from-slate-900 to-blue-950 rounded-2xl p-6 text-white shadow-lg border border-slate-800">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
+            <div>
+              <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 mb-2">
+                <span>Práctica</span>
+              </div>
+              <h3 class="text-lg font-bold text-white tracking-tight">Banco de Pruebas de Escalabilidad: "Regla 1 vs 100"</h3>
+              <p class="text-xs text-slate-300 max-w-2xl">
+                Verificación experimental: Opera con latencia instantánea para 1 registro sin sobrecargar el Event Loop, y escala a 100 registros en cola consecutiva determinista sin colisiones.
+              </p>
+            </div>
+
+            <!-- Controles de Prueba -->
+            <div class="flex flex-wrap items-center gap-3">
+              <div class="bg-slate-800/80 px-3 py-2 rounded-xl border border-slate-700 flex items-center gap-2 text-xs">
+                <span class="text-slate-400">Latencia:</span>
+                <select id="fifoDelaySelect" class="bg-slate-900 text-white rounded px-2 py-1 border border-slate-700 text-xs focus:outline-none">
+                  <option value="0">0 ms (Instantáneo)</option>
+                  <option value="50">50 ms (Visual rápido)</option>
+                  <option value="150" selected>150 ms (Demostración de clase)</option>
+                </select>
+              </div>
+
+              <button id="btnTestSingleRecord" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition-all shadow-md flex items-center gap-2">
+                <span>Probar 1 Registro</span>
+              </button>
+
+              <button id="btnTestStress100" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-md flex items-center gap-2">
+                <span>Probar Carga 100 Registros</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Barra de Progreso de Prueba Masiva -->
+          <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/60">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span id="stressProgressText" class="text-slate-300 font-mono">Esperando ejecución de pruebas...</span>
+            </div>
+            <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden border border-slate-700/50">
+              <div id="stressProgressBar" class="h-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-150" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráficos del Dashboard -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">Tendencia Central: Media vs Mediana</h4>
+                <p class="text-xs text-slate-400">Comparativa de estabilidad estadística</p>
+              </div>
+              <span class="text-xs font-mono font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">Grafico</span>
+            </div>
+            <div class="h-64">
+              <canvas id="dashboardChartMeanMedian"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">Ingresos por Categoría de Producto</h4>
+                <p class="text-xs text-slate-400">Distribución de volumen transaccional</p>
+              </div>
+              <span class="text-xs font-mono font-bold text-cyan-600 bg-cyan-50 px-2 py-1 rounded">Ventas</span>
+            </div>
+            <div class="h-64">
+              <canvas id="dashboardChartCategories"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla de Últimas Transacciones -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Monitor de Secuencia Consecutiva en Vivo</h4>
+              <p class="text-xs text-slate-400">Transacciones procesadas en estricto orden correlativo</p>
+            </div>
+            <span class="text-xs text-slate-500 font-mono">Últimas 5 transacciones</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">Folio Ticket</th>
+                  <th class="px-4 py-3">Cliente</th>
+                  <th class="px-4 py-3">Fecha y Hora</th>
+                  <th class="px-4 py-3 text-right">Total</th>
+                  <th class="px-4 py-3 text-center">Estado</th>
+                </tr>
+              </thead>
+              <tbody id="dashboardRecentSalesTbody">
+                <!-- Inyectado por UIManager -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================================
+           VISTA 2: TERMINAL DE VENTAS (TPV) CON SECUENCIA CONSECUTIVA
+           ===================================================================== -->
+      <section id="view-pos" class="view-section hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          
+          <!-- Catálogo de Productos (2 Columnas) -->
+          <div class="lg:col-span-2 space-y-4">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+              <div>
+                <h3 class="font-bold text-slate-900 text-base">Catálogo de Productos para Facturación</h3>
+                <p class="text-xs text-slate-400">Existencias sincronizadas con el motor atómico de inventario</p>
+              </div>
+            </div>
+
+            <!-- Grilla de Productos -->
+            <div id="posProductGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Inyectado por UIManager -->
+            </div>
+          </div>
+
+          <!-- Carrito y Confirmación Transaccional (1 Columna) -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4 sticky top-6">
+            <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+              <h4 class="font-bold text-slate-900 text-sm">Resumen de Venta Consecutiva</h4>
+              <span class="text-xs font-mono bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-semibold">TPV #01</span>
+            </div>
+
+            <!-- Selector de Cliente -->
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-slate-700">Cliente Comercial:</label>
+              <select id="posCustomerSelect" class="w-full text-xs p-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="CUST-001">Tech Solutions Global S.A.C. (RUC 20601234567)</option>
+                <option value="CUST-002">Inversiones Pacífico E.I.R.L. (RUC 20559876543)</option>
+                <option value="CUST-003">Dr. Alejandro Morales (DNI 46781290)</option>
+                <option value="CUST-004">Constructora Andina S.A. (RUC 20498877661)</option>
+              </select>
+            </div>
+
+            <!-- Selector de Vendedor Asignado (RF-05 / FASE 10) -->
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-slate-700">Vendedor Asignado (RF-05):</label>
+              <select id="posSellerSelect" class="w-full text-xs p-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="SELL-001">Valeria Quispe (vquispe@salesia.pe)</option>
+                <option value="SELL-002">Renato Cárdenas (rcardenas@salesia.pe)</option>
+                <option value="SELL-003">Lucía Fernández (lfernandez@salesia.pe)</option>
+                <option value="SELL-004">Jorge Benítez (jbenitez@salesia.pe)</option>
+              </select>
+            </div>
+
+            <!-- Selector de Método de Pago -->
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-slate-700">Método de Pago:</label>
+              <select id="posPaymentMethodSelect" class="w-full text-xs p-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="TRANSFERENCIA">Transferencia Bancaria</option>
+                <option value="TARJETA_CREDITO">Tarjeta de Crédito / Débito</option>
+                <option value="EFECTIVO">Efectivo</option>
+                <option value="YAPE_PLIN">Billetera Digital (Yape / Plin)</option>
+              </select>
+            </div>
+
+            <!-- Lista de Ítems en Carrito -->
+            <div class="border border-slate-200 rounded-xl max-h-60 overflow-y-auto divide-y divide-slate-100" id="posCartItemsList">
+              <!-- Inyectado dinámicamente -->
+            </div>
+
+            <!-- Desglose de Totales -->
+            <div class="space-y-2 text-xs pt-2">
+              <div class="flex justify-between text-slate-500">
+                <span>Subtotal (Base Imponible):</span>
+                <span id="posSubtotal" class="font-mono">S/ 0.00</span>
+              </div>
+              <div class="flex justify-between text-slate-500">
+                <span>IGV (18%):</span>
+                <span id="posTax" class="font-mono">S/ 0.00</span>
+              </div>
+              <div class="flex justify-between text-sm font-extrabold text-slate-900 pt-2 border-t border-slate-200">
+                <span>Total a Pagar:</span>
+                <span id="posTotal" class="font-mono text-blue-600">S/ 0.00</span>
+              </div>
+            </div>
+
+            <button id="btnConfirmPosSale" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs tracking-wide shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-2">
+              <span>Emitir Venta Consecutiva</span>
+            </button>
+            <p class="text-[11px] text-center text-slate-400">
+              🔒 La transacción se encola en FIFO y reserva inventario atómicamente.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- =====================================================================
+           VISTA 3: COTIZADOR 100% INDEPENDIENTE (SANDBOX PATTERN)
+           ===================================================================== -->
+      <section id="view-quotes" class="view-section hidden space-y-6">
+        
+        <!-- Banner de Arquitectura de Aislamiento -->
+        <div class="bg-cyan-950 text-cyan-50 rounded-2xl p-5 border border-cyan-800/60 shadow-md">
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🛡️</span>
+            <div>
+              <h3 class="font-bold text-sm text-cyan-200 uppercase tracking-wide">Módulo de Cotizaciones 100% Desacoplado (Sandbox Pattern)</h3>
+              <p class="text-xs text-cyan-100/80 mt-1 leading-relaxed">
+                Este módulo opera con cálculo matemático puro y <strong>no descuenta inventario ni altera los indicadores de Analytics</strong> mientras las cotizaciones permanezcan en estado de borrador o emitida. Únicamente al presionar <strong>"Convertir a Venta"</strong> se emite el evento formal que entra al procesador transaccional con folio correlativo consecutivo.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Creador de Cotización Rápida -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
+          <h4 class="font-bold text-slate-900 text-sm">Nueva Oferta / Cotización Comercial</h4>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div>
+              <label class="font-semibold text-slate-700 block mb-1">Cliente Solicitante:</label>
+              <select id="quoteCustomerSelect" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50">
+                <option value="CUST-001">Tech Solutions Global S.A.C.</option>
+                <option value="CUST-002">Inversiones Pacífico E.I.R.L.</option>
+                <option value="CUST-003">Dr. Alejandro Morales</option>
+                <option value="CUST-004">Constructora Andina S.A.</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-700 block mb-1">Descuento Global Comercial (%):</label>
+              <input id="quoteGlobalDisc" type="number" min="0" max="50" value="0" class="w-full p-2 rounded-lg border border-slate-200 bg-slate-50 font-mono">
+            </div>
+            <div>
+              <label class="font-semibold text-slate-700 block mb-1">Notas Comerciales / Validez:</label>
+              <input id="quoteNotes" type="text" placeholder="Ej. Validez 15 días, entrega en almacén" class="w-full p-2 rounded-lg border border-slate-200 bg-slate-50">
+            </div>
+          </div>
+
+          <!-- Selector de Ítems para Cotización -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200 items-end">
+            <div class="sm:col-span-2">
+              <label class="font-semibold text-slate-700 block mb-1">Producto a Cotizar:</label>
+              <select id="quoteSelectProduct" class="w-full p-2 rounded-lg border border-slate-200 bg-white">
+                <!-- Inyectado dinámicamente -->
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-700 block mb-1">Cantidad:</label>
+              <input id="quoteItemQty" type="number" min="1" value="1" class="w-full p-2 rounded-lg border border-slate-200 bg-white font-mono">
+            </div>
+            <div>
+              <label class="font-semibold text-slate-700 block mb-1">Desc. Ítem (%):</label>
+              <input id="quoteItemDisc" type="number" min="0" max="30" value="0" class="w-full p-2 rounded-lg border border-slate-200 bg-white font-mono">
+            </div>
+            <div class="sm:col-span-4 flex justify-end">
+              <button id="btnAddQuoteItem" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs transition-colors">
+                + Agregar Producto a Cotización
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabla de ítems de la cotización actual -->
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="px-3 py-2">Producto</th>
+                  <th class="px-3 py-2 text-center">Cantidad</th>
+                  <th class="px-3 py-2 text-right">Precio Unit.</th>
+                  <th class="px-3 py-2 text-center">Descuento</th>
+                  <th class="px-3 py-2 text-right">Subtotal</th>
+                  <th class="px-3 py-2 text-center">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="quoteItemsTbody">
+                <!-- Inyectado por UIManager -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Preview de Totales y Guardar -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+            <div class="text-xs text-slate-500">
+              <span>Subtotal: <strong id="quotePreviewSubtotal" class="font-mono text-slate-800">S/ 0.00</strong></span>
+              <span class="mx-3">&bull;</span>
+              <span>Total Proyectado (inc. IGV): <strong id="quotePreviewTotal" class="font-mono text-cyan-700 font-bold text-sm">S/ 0.00</strong></span>
+            </div>
+            <button id="btnSaveQuote" class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs tracking-wide shadow-md transition-all">
+              💾 Guardar Cotización en Sandbox
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabla Histórica de Cotizaciones -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <h4 class="font-bold text-slate-900 text-sm">Cotizaciones Registradas</h4>
+            <span class="text-xs text-slate-400">Totalmente independientes de ventas</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">Folio Cotización</th>
+                  <th class="px-4 py-3">Cliente</th>
+                  <th class="px-4 py-3">Fecha Emisión</th>
+                  <th class="px-4 py-3 text-center">Ítems</th>
+                  <th class="px-4 py-3 text-right">Total Presupuestado</th>
+                  <th class="px-4 py-3 text-center">Estado Sandbox</th>
+                  <th class="px-4 py-3 text-center">Acción Transaccional</th>
+                </tr>
+              </thead>
+              <tbody id="quotesTableTbody">
+                <!-- Inyectado por UIManager -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================================
+           VISTA 4: ANALYTICS & MOTOR ESTADÍSTICO (SEMANA 07)
+           ===================================================================== -->
+      <section id="view-analytics" class="view-section hidden space-y-6">
+        
+        <!-- Tarjeta de Contenidos Académicos de Semana 07 -->
+        <div class="bg-gradient-to-r from-blue-900 to-indigo-950 text-white rounded-2xl p-6 shadow-md border border-blue-800">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">Semana 07</span>
+            <span class="text-xs text-slate-300">Fundamentos y Algoritmia para Inteligencia Artificial</span>
+          </div>
+          <h3 class="text-lg font-bold">Motor Estadístico Aplicado a la Gestión Comercial</h3>
+          <p class="text-xs text-blue-100/80 max-w-3xl mt-1">
+            Los datos transaccionales consecutivos alimentan directamente las fórmulas estadísticas de tendencia central, evaluación de asimetría, variables aleatorias cuantitativas y el Teorema de Bayes para análisis probabilístico de clientes.
+          </p>
+        </div>
+
+        <!-- 1. Análisis de Tendencia Central: Media vs Mediana -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h4 class="font-bold text-slate-900 text-sm">Media Aritmética ($\bar{x}$)</h4>
+              <span class="text-[11px] font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-semibold">Σ xᵢ / n</span>
+            </div>
+            <div id="statMeanVal" class="text-3xl font-extrabold text-blue-600 font-mono">S/ 0.00</div>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Ticket promedio por transacción. Sensible a valores extremos (outliers) en grandes compras corporativas.
+            </p>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h4 class="font-bold text-slate-900 text-sm">Mediana Estadística ($M$)</h4>
+              <span class="text-[11px] font-mono text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded font-semibold">P50 Central</span>
+            </div>
+            <div id="statMedianVal" class="text-3xl font-extrabold text-cyan-600 font-mono">S/ 0.00</div>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Valor central ordenado. Estimador robusto que no se distorsiona con transacciones inusualmente altas o bajas.
+            </p>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
+            <div class="border-b border-slate-100 pb-2">
+              <span class="text-xs font-semibold text-slate-400">Diagnóstico de Distribución</span>
+              <h4 id="statComparisonType" class="font-bold text-slate-900 text-sm">Aproximadamente Simétrica</h4>
+            </div>
+            <p id="statComparisonDesc" class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100">
+              Sin datos suficientes. Registra transacciones para comparar la concentración de valores.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2. Teorema de Bayes Interactivo (Semana 07) -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h4 class="font-bold text-slate-900 text-base">Teorema de Bayes Aplicado a la Probabilidad Comercial</h4>
+              <p class="text-xs text-slate-400">P(A|B) = [ P(B|A) &times; P(A) ] / P(B) &bull; Predicción de cliente corporativo dada compra técnica</p>
+            </div>
+            <span class="text-xs font-mono font-bold bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full border border-indigo-200">
+              Inferencia Bayesiana
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+            <!-- Controles de Probabilidad -->
+            <div class="space-y-4 text-xs">
+              <div>
+                <div class="flex justify-between font-semibold text-slate-700 mb-1">
+                  <span>P(A): Probabilidad a priori de Cliente Corporativo</span>
+                </div>
+                <input id="bayesPriorInput" type="number" step="0.05" min="0.01" max="1" value="0.35" class="w-full p-2.5 rounded-lg border border-slate-200 font-mono bg-slate-50">
+                <span class="text-[11px] text-slate-400">35% de los clientes en base histórica son corporativos.</span>
+              </div>
+
+              <div>
+                <div class="flex justify-between font-semibold text-slate-700 mb-1">
+                  <span>P(B|A): Verosimilitud (Compra serv./laptops | Corporativo)</span>
+                </div>
+                <input id="bayesLikelihoodInput" type="number" step="0.05" min="0.01" max="1" value="0.75" class="w-full p-2.5 rounded-lg border border-slate-200 font-mono bg-slate-50">
+                <span class="text-[11px] text-slate-400">75% de los corporativos compran servidores o cómputo.</span>
+              </div>
+
+              <div>
+                <div class="flex justify-between font-semibold text-slate-700 mb-1">
+                  <span>P(B): Probabilidad Marginal de Compra de Tecnología</span>
+                </div>
+                <input id="bayesMarginalInput" type="number" step="0.05" min="0.01" max="1" value="0.40" class="w-full p-2.5 rounded-lg border border-slate-200 font-mono bg-slate-50">
+                <span class="text-[11px] text-slate-400">40% del total de tickets corresponden a tecnología alta gama.</span>
+              </div>
+            </div>
+
+            <!-- Pasos Matemáticos de Cálculo -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+              <h5 class="font-bold text-xs text-slate-700 uppercase tracking-wider">Demostración Paso a Paso</h5>
+              <div id="bayesStepsContainer" class="space-y-1.5">
+                <!-- Inyectado dinámicamente -->
+              </div>
+            </div>
+
+            <!-- Resultado Gráfico A Priori vs A Posteriori -->
+            <div class="text-center p-4 bg-emerald-50/60 rounded-xl border border-emerald-200 space-y-3">
+              <span class="text-xs font-semibold text-emerald-800">Probabilidad Posterior Calculada P(A|B)</span>
+              <div id="bayesResultPct" class="text-4xl font-extrabold text-emerald-600 font-mono">65.62%</div>
+              <p id="bayesExplanation" class="text-xs text-slate-600 leading-snug">
+                El evento observado incrementa significativamente la certeza de pertenencia al segmento corporativo.
+              </p>
+              <div class="h-28 mt-2">
+                <canvas id="bayesChartComparison"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.5 Análisis de Variables Estadísticas y Variables Aleatorias (RF-14, RF-15 / Semana 07) -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h4 class="font-bold text-slate-900 text-base">Clasificación y Análisis de Variables Estadísticas (Semana 07)</h4>
+              <p class="text-xs text-slate-400">Identificación de variables cualitativas, cuantitativas discretas y cuantitativas continuas (RF-14, RF-15)</p>
+            </div>
+            <span class="text-xs font-mono font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded">Variables Aleatorias</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-[11px] font-mono text-cyan-700 font-bold uppercase">Variable Cuantitativa Continua</span>
+              <h5 class="font-bold text-sm text-slate-900 mt-1">Monto de Venta Transaccional (X ∈ ℝ⁺)</h5>
+              <div class="grid grid-cols-2 gap-2 mt-3 text-xs">
+                <div>
+                  <span class="text-slate-400 block">Media Aritmética:</span>
+                  <span id="rvAmountMean" class="font-bold font-mono text-blue-600">S/ 0.00</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block">Mediana Central:</span>
+                  <span id="rvAmountMedian" class="font-bold font-mono text-cyan-600">S/ 0.00</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-[11px] font-mono text-blue-700 font-bold uppercase">Variable Cuantitativa Discreta</span>
+              <h5 class="font-bold text-sm text-slate-900 mt-1">Cantidad de Artículos por Ticket (Y ∈ ℕ)</h5>
+              <div class="grid grid-cols-2 gap-2 mt-3 text-xs">
+                <div>
+                  <span class="text-slate-400 block">Media Aritmética:</span>
+                  <span id="rvQtyMean" class="font-bold font-mono text-blue-600">0 uds</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block">Mediana Central:</span>
+                  <span id="rvQtyMedian" class="font-bold font-mono text-cyan-600">0 uds</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Panel de Insights Empresariales Deterministas -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h4 class="font-bold text-slate-900 text-base">Motor de Insights y Alertas Deterministas</h4>
+              <p class="text-xs text-slate-400">Detección de patrones estadísticos y sugerencias comerciales basadas en datos reales</p>
+            </div>
+            <span class="text-xs font-mono font-bold text-cyan-600 bg-cyan-50 px-2.5 py-1 rounded">Reglas Analíticas</span>
+          </div>
+
+          <div id="insightsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Inyectado por UIManager -->
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================================
+           VISTA 5: ALMACÉN E INVENTARIO
+           ===================================================================== -->
+      <section id="view-inventory" class="view-section hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Control de Existencias en Tiempo Real</h4>
+              <p class="text-xs text-slate-400">Afectación atómica vinculada a la cola transaccional</p>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">SKU</th>
+                  <th class="px-4 py-3">Producto</th>
+                  <th class="px-4 py-3">Categoría</th>
+                  <th class="px-4 py-3 text-right">Precio Venta</th>
+                  <th class="px-4 py-3 text-center">Stock Disponible</th>
+                  <th class="px-4 py-3 text-center">Stock Mínimo</th>
+                  <th class="px-4 py-3 text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableTbody">
+                <!-- Inyectado por UIManager -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tabla de Movimientos de Inventario (Entradas y Salidas - RF-08) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Historial de Movimientos de Inventario (RF-08)</h4>
+              <p class="text-xs text-slate-400">Entradas por reabastecimiento y salidas por ventas transaccionales</p>
+            </div>
+            <span class="text-xs font-mono text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded font-semibold">Kárdex</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-2.5">Fecha y Hora</th>
+                  <th class="px-4 py-2.5">SKU</th>
+                  <th class="px-4 py-2.5">Producto</th>
+                  <th class="px-4 py-2.5 text-center">Tipo Movimiento</th>
+                  <th class="px-4 py-2.5 text-center">Cantidad</th>
+                  <th class="px-4 py-2.5">Referencia Folio</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryMovementsTbody">
+                <!-- Inyectado dinámicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- =====================================================================
+           VISTA 6: HISTORIAL CONSECUTIVO & COMPROBANTES
+           ===================================================================== -->
+      <section id="view-history" class="view-section hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Libro Registro Consecutivo de Transacciones</h4>
+              <p class="text-xs text-slate-400">Trazabilidad estricta sin saltos de folio</p>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">Folio Ticket</th>
+                  <th class="px-4 py-3">N° Consecutivo</th>
+                  <th class="px-4 py-3">Cliente</th>
+                  <th class="px-4 py-3">Fecha Emisión</th>
+                  <th class="px-4 py-3">Método Pago</th>
+                  <th class="px-4 py-3 text-right">Monto Total</th>
+                  <th class="px-4 py-3 text-center">Comprobante</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableTbody">
+                <!-- Inyectado por UIManager -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VISTA 7: CLIENTES
+           ===================================================================== -->
+      <section id="view-customers" class="view-section hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Directorio de Clientes Comerciales</h4>
+              <p class="text-xs text-slate-400">Fichas de clientes corporativos, RUC y límites crediticios</p>
+              <p id="customersCounter" class="text-[11px] text-slate-400 mt-1 font-mono"></p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <input id="customersSearchInput" type="search" placeholder="Buscar por nombre, documento, correo..." class="text-xs p-2 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+              <label class="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
+                <input id="customersShowInactive" type="checkbox" class="rounded border-slate-300">
+                Ver inactivos
+              </label>
+              <button id="btnNewCustomer" class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors">
+                + Nuevo cliente
+              </button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">Código</th>
+                  <th class="px-4 py-3">Razón Social / Nombre</th>
+                  <th class="px-4 py-3">Documento</th>
+                  <th class="px-4 py-3">Segmento</th>
+                  <th class="px-4 py-3">Correo</th>
+                  <th class="px-4 py-3 text-right">Línea de Crédito</th>
+                  <th class="px-4 py-3 text-center">Estado</th>
+                  <th class="px-4 py-3 text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="customersTableTbody">
+                <!-- Inyectado dinámicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VISTA 8: CATÁLOGO DE PRODUCTOS
+           ===================================================================== -->
+      <section id="view-products" class="view-section hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-4 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Catálogo Maestro de Productos y Precios</h4>
+              <p class="text-xs text-slate-400">Especificaciones técnicas, categorías y costos</p>
+              <p id="productsCounter" class="text-[11px] text-slate-400 mt-1 font-mono"></p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <input id="productsSearchInput" type="search" placeholder="Buscar por SKU o descripción..." class="text-xs p-2 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-56">
+              <select id="productsCategoryFilter" class="text-xs p-2 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Todas las categorías</option>
+              </select>
+              <label class="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
+                <input id="productsShowInactive" type="checkbox" class="rounded border-slate-300">
+                Ver inactivos
+              </label>
+              <button id="btnNewProduct" class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors">
+                + Nuevo producto
+              </button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">SKU</th>
+                  <th class="px-4 py-3">Descripción</th>
+                  <th class="px-4 py-3">Categoría</th>
+                  <th class="px-4 py-3 text-right">Precio Venta</th>
+                  <th class="px-4 py-3 text-center">Stock</th>
+                  <th class="px-4 py-3 text-center">Stock Mínimo</th>
+                  <th class="px-4 py-3 text-center">Estado</th>
+                  <th class="px-4 py-3 text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableTbody">
+                <!-- Inyectado dinámicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VISTA 9: REPORTES & AUDITORÍA
+           ===================================================================== -->
+      <section id="view-reports" class="view-section hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs px-6 py-3 flex flex-wrap items-end gap-3 text-xs">
+          <div class="space-y-1">
+            <label class="font-semibold text-slate-600 block">Desde</label>
+            <input id="reportsDateFrom" type="date" class="p-2 rounded-lg border border-slate-200 bg-slate-50">
+          </div>
+          <div class="space-y-1">
+            <label class="font-semibold text-slate-600 block">Hasta</label>
+            <input id="reportsDateTo" type="date" class="p-2 rounded-lg border border-slate-200 bg-slate-50">
+          </div>
+          <div class="space-y-1">
+            <label class="font-semibold text-slate-600 block">Vendedor</label>
+            <select id="reportsSellerFilter" class="p-2 rounded-lg border border-slate-200 bg-slate-50">
+              <option value="">Todos los vendedores</option>
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label class="font-semibold text-slate-600 block">Método de pago</label>
+            <select id="reportsPaymentFilter" class="p-2 rounded-lg border border-slate-200 bg-slate-50">
+              <option value="">Todos los métodos</option>
+            </select>
+          </div>
+          <button id="btnReportsClear" class="px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
+            Limpiar filtros
+          </button>
+          <span id="reportsCounter" class="text-[11px] text-slate-400 font-mono ml-auto"></span>
+        </div>
+        <div id="reportsSummaryContainer">
+          <!-- Inyectado dinámicamente -->
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VISTA 10: REGISTRO DE AUDITORÍA (RF-22 / FASE 13)
+           ===================================================================== -->
+      <section id="view-audit" class="view-section hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Registro de Auditoría de Operaciones Críticas (RF-22)</h4>
+              <p class="text-xs text-slate-400">Trazabilidad de accesos, ventas consecutivas, cambios de inventario y análisis</p>
+              <p id="auditCounter" class="text-[11px] text-slate-400 mt-1 font-mono"></p>
+            </div>
+            <span class="text-xs font-mono text-blue-600 bg-blue-50 px-2.5 py-1 rounded font-semibold">Trazabilidad</span>
+          </div>
+          <div class="px-6 py-3 border-b border-slate-100 bg-slate-50/60 flex flex-wrap items-end gap-3 text-xs">
+            <div class="space-y-1">
+              <label class="font-semibold text-slate-600 block">Buscar</label>
+              <input id="auditSearchInput" type="search" placeholder="Detalle, entidad o acción..." class="p-2 rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-56">
+            </div>
+            <div class="space-y-1">
+              <label class="font-semibold text-slate-600 block">Acción</label>
+              <select id="auditActionFilter" class="p-2 rounded-lg border border-slate-200 bg-white">
+                <option value="">Todas las acciones</option>
+              </select>
+            </div>
+            <div class="space-y-1">
+              <label class="font-semibold text-slate-600 block">Rol</label>
+              <select id="auditRoleFilter" class="p-2 rounded-lg border border-slate-200 bg-white">
+                <option value="">Todos los roles</option>
+              </select>
+            </div>
+            <div class="space-y-1">
+              <label class="font-semibold text-slate-600 block">Desde</label>
+              <input id="auditDateFrom" type="date" class="p-2 rounded-lg border border-slate-200 bg-white">
+            </div>
+            <div class="space-y-1">
+              <label class="font-semibold text-slate-600 block">Hasta</label>
+              <input id="auditDateTo" type="date" class="p-2 rounded-lg border border-slate-200 bg-white">
+            </div>
+            <button id="btnAuditClear" class="px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">
+              Limpiar filtros
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">Fecha y Hora</th>
+                  <th class="px-4 py-3">Acción</th>
+                  <th class="px-4 py-3">Entidad</th>
+                  <th class="px-4 py-3">Usuario & Rol</th>
+                  <th class="px-4 py-3">Detalle de Operación</th>
+                </tr>
+              </thead>
+              <tbody id="auditTableTbody">
+                <!-- Inyectado dinámicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- =========================================================================
+       MODAL DE COMPROBANTE FISCAL SIMULADO (IMPRIMIBLE)
+       ========================================================================= -->
+  <div id="receiptModal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+      <div id="receiptModalContent">
+        <!-- Inyectado dinámicamente -->
+      </div>
+      <div class="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
+        <button id="printReceiptBtn" onclick="window.print()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors flex items-center gap-1.5">
+          <span>🖨️</span>
+          <span>Imprimir / PDF</span>
+        </button>
+        <button id="closeReceiptModalBtn" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+    <!-- =========================================================================
+       MODAL: ALTA / EDICIÓN DE CLIENTE (RF-03)
+       ========================================================================= -->
+  <div id="customerModal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+      <h3 id="customerModalTitle" class="text-base font-bold text-slate-900 mb-4">Nuevo cliente</h3>
+      <input type="hidden" id="customerFormId">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+        <div class="space-y-1">
+          <label class="font-semibold text-slate-700">Tipo doc.</label>
+          <select id="customerFormDocType" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50">
+            <option value="RUC">RUC</option>
+            <option value="DNI">DNI</option>
+          </select>
+        </div>
+        <div class="space-y-1 sm:col-span-2">
+          <label class="font-semibold text-slate-700">N° de documento</label>
+          <input id="customerFormDocNumber" type="text" inputmode="numeric" maxlength="11" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50 font-mono">
+        </div>
+        <div class="space-y-1 sm:col-span-3">
+          <label class="font-semibold text-slate-700">Razón social / Nombre</label>
+          <input id="customerFormName" type="text" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50">
+        </div>
+        <div class="space-y-1">
+          <label class="font-semibold text-slate-700">Segmento</label>
+          <select id="customerFormSegment" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50">
+            <option value="Corporativo">Corporativo</option>
+            <option value="Pyme">Pyme</option>
+            <option value="Profesional">Profesional</option>
+            <option value="Personal">Personal</option>
+          </select>
+        </div>
+        <div class="space-y-1 sm:col-span-2">
+          <label class="font-semibold text-slate-700">Línea de crédito (S/)</label>
+          <input id="customerFormCredit" type="number" min="0" step="0.01" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50 font-mono">
+        </div>
+        <div class="space-y-1 sm:col-span-2">
+          <label class="font-semibold text-slate-700">Correo</label>
+          <input id="customerFormEmail" type="email" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50">
+        </div>
+        <div class="space-y-1">
+          <label class="font-semibold text-slate-700">Teléfono</label>
+          <input id="customerFormPhone" type="text" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50">
+        </div>
+      </div>
+      <p id="customerFormError" class="hidden mt-3 text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2"></p>
+      <div class="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
+        <button id="btnCancelCustomer" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors">Cancelar</button>
+        <button id="btnSaveCustomer" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+<!-- =========================================================================
+       MODAL: ALTA / EDICIÓN DE PRODUCTO (RF-04)
+     ========================================================================= -->
+  <div id="productModal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+      <h3 id="productModalTitle" class="text-base font-bold text-slate-900 mb-4">Nuevo producto</h3>
+      <input type="hidden" id="productFormId">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+        <div class="space-y-1 sm:col-span-2">
+          <label class="font-semibold text-slate-700">SKU</label>
+          <input id="productFormSku" type="text" maxlength="30" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50 font-mono uppercase">
+        </div>
+        <div class="space-y-1">
+          <label class="font-semibold text-slate-700">Unidad</label>
+          <input id="productFormUnit" type="text" maxlength="10" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50 font-mono uppercase">
+        </div>
+        <div class="space-y-1 sm:col-span-3">
+          <label class="font-semibold text-slate-700">Descripción</label>
+          <input id="productFormName" type="text" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50">
+        </div>
+        <div class="space-y-1 sm:col-span-3">
+          <label class="font-semibold text-slate-700">Categoría</label>
+          <select id="productFormCategory" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50"></select>
+        </div>
+        <div class="space-y-1">
+          <label class="font-semibold text-slate-700">Precio venta (S/)</label>
+          <input id="productFormPrice" type="number" min="0" step="0.01" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50 font-mono">
+        </div>
+        <div class="space-y-1">
+          <label class="font-semibold text-slate-700">Costo (S/)</label>
+          <input id="productFormCost" type="number" min="0" step="0.01" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50 font-mono">
+        </div>
+        <div class="space-y-1">
+          <label class="font-semibold text-slate-700">Stock mínimo</label>
+          <input id="productFormMinStock" type="number" min="0" step="1" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50 font-mono">
+        </div>
+        <div class="space-y-1 sm:col-span-3">
+          <label class="font-semibold text-slate-700">Stock</label>
+          <input id="productFormStock" type="number" min="0" step="1" class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50 font-mono disabled:bg-slate-100 disabled:text-slate-400">
+          <p id="productFormStockNote" class="text-[11px] text-slate-400"></p>
+        </div>
+      </div>
+      <p id="productFormError" class="hidden mt-3 text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2"></p>
+      <div class="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
+        <button id="btnCancelProduct" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors">Cancelar</button>
+        <button id="btnSaveProduct" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor Toast para Notificaciones del Sistema -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 max-w-sm w-full pointer-events-none *:pointer-events-auto"></div>
+
+  <!-- Carga de módulos ES6 desde frontend/src/app/app.js -->
+  <script type="module" src="frontend/src/app/app.js"></script>
+</body>
+</html>
+
